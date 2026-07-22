@@ -1,77 +1,73 @@
-\# Addressing Plan
+# Test Plan
 
+This document describes the validation tests performed on the corporate network.
 
+## Connectivity Tests
 
-This document defines the IPv4 addressing scheme used in the corporate network.
-
-
-
-\## VLAN Addressing
-
-
-
-| VLAN | Name | Network | Default Gateway | Address Assignment |
-
-|---:|---|---|---|---|
-
-| 10 | ADMIN | 10.10.10.0/24 | 10.10.10.1 | DHCP |
-
-| 20 | DEVELOPMENT | 10.10.20.0/24 | 10.10.20.1 | DHCP |
-
-| 30 | IT-SUPPORT | 10.10.30.0/24 | 10.10.30.1 | DHCP |
-
-| 99 | MANAGEMENT | 10.10.99.0/24 | 10.10.99.1 | Static |
-
-| 999 | UNUSED-PORTS | No IP network | None | Not applicable |
-
-
-
-\## Infrastructure Addresses
-
-
-
-| Device | Interface | IP Address | Purpose |
-
+| Test | Source | Destination | Expected Result |
 |---|---|---|---|
+| ADMIN local connectivity | PC-ADMIN-01 | PC-ADMIN-02 | Allowed |
+| DEVELOPMENT local connectivity | PC-DEV-01 | PC-DEV-02 | Allowed |
+| IT gateway connectivity | PC-IT-01 | 10.10.30.1 | Allowed |
+| IT to ADMIN connectivity | PC-IT-01 | PC-ADMIN-01 | Allowed |
+| DEVELOPMENT to ADMIN connectivity | PC-DEV-01 | PC-ADMIN-01 | Blocked |
+| IT to management network | PC-IT-01 | 10.10.99.2 | Allowed |
 
-| R1-EDGE | G0/0.10 | 10.10.10.1/24 | ADMIN gateway |
+## DHCP Tests
 
-| R1-EDGE | G0/0.20 | 10.10.20.1/24 | DEVELOPMENT gateway |
+Each user device must receive:
 
-| R1-EDGE | G0/0.30 | 10.10.30.1/24 | IT-SUPPORT gateway |
+- An IP address from its corresponding VLAN.
+- The correct subnet mask.
+- The correct default gateway.
 
-| R1-EDGE | G0/0.99 | 10.10.99.1/24 | MANAGEMENT gateway |
+| VLAN | Expected DHCP Range | Expected Gateway |
+|---:|---|---|
+| 10 | 10.10.10.21 - 10.10.10.254 | 10.10.10.1 |
+| 20 | 10.10.20.21 - 10.10.20.254 | 10.10.20.1 |
+| 30 | 10.10.30.21 - 10.10.30.254 | 10.10.30.1 |
 
-| SW-ACCESS-01 | VLAN 99 | 10.10.99.2/24 | Switch management |
+## SSH Tests
 
+| Source | Destination | Expected Result |
+|---|---|---|
+| PC-IT-01 | R1-EDGE | Allowed |
+| PC-IT-01 | SW-ACCESS-01 | Allowed |
+| PC-ADMIN-01 | R1-EDGE | Blocked |
+| PC-ADMIN-01 | SW-ACCESS-01 | Blocked |
+| PC-DEV-01 | R1-EDGE | Blocked |
+| PC-DEV-01 | SW-ACCESS-01 | Blocked |
 
+## Port Security Tests
 
-\## DHCP Reservations
+Each active access port must:
 
+- Learn one sticky MAC address.
+- Accept traffic from the authorized device.
+- Reject traffic from additional unauthorized MAC addresses.
+- Remain operational when using restrict mode.
 
+## Unused Port Tests
 
-The first twenty addresses of each user network are excluded from DHCP.
+Ports assigned to VLAN 999 must:
 
+- Appear as administratively disabled.
+- Be separated from production VLANs.
+- Reject connections from newly attached devices.
 
+## Verification Commands
 
-\- `.1` is assigned to the default gateway.
+The following Cisco IOS commands were used to validate the implementation:
 
-\- `.2` through `.20` are reserved for infrastructure and future services.
+- `show vlan brief`
+- `show interfaces trunk`
+- `show ip interface brief`
+- `show ip dhcp binding`
+- `show access-lists`
+- `show port-security`
+- `show port-security address`
+- `show interfaces status`
 
-\- DHCP clients receive addresses starting from `.21`.
+## Validation Result
 
-
-
-\## Subnet Mask
-
-
-
-All current networks use:
-
-
-
-```text
-
-255.255.255.0
-
-
+All planned network, security, DHCP, SSH, and switch hardening tests were completed successfully.
