@@ -1,1 +1,49 @@
-\# Corporate Network InfrastructureA secure and segmented corporate network designed and implemented using Cisco Packet Tracer.\## Project OverviewThis project simulates the network infrastructure of a small technology company with separate departments for Administration, Development, and IT Support.The network implements VLAN segmentation, inter-VLAN routing, DHCP, access control lists, secure remote administration, and switch port security.\## Current Features\- VLAN 10: Administration\- VLAN 20: Development\- VLAN 30: IT Support\- VLAN 99: Network Management\- VLAN 999: Unused Ports\- Router-on-a-stick\- DHCP for user networks\- Inter-VLAN routing\- ACL filtering between departments\- SSH administration restricted to IT Support\- Port Security with sticky MAC addresses\- Disabled and isolated unused switch ports\## Topology!\[Network Topology](evidence/topology-v0.8.png)\## Technologies\- Cisco Packet Tracer\- Cisco IOS\- VLANs and IEEE 802.1Q trunks\- DHCP\- Access Control Lists\- SSH\- Port Security
+# Corporate Network Infrastructure
+
+A secure and segmented corporate network designed and implemented using Cisco Packet Tracer.
+
+## Project Overview
+
+This project simulates the network infrastructure of a small technology company with separate departments for Administration, Development, and IT Support.
+
+The network implements VLAN segmentation, inter-VLAN routing, DHCP, access control lists, secure remote administration, and switch port security.
+
+## Current Features
+
+- VLAN 10: Administration
+- VLAN 20: Development
+- VLAN 30: IT Support
+- VLAN 99: Network Management
+- VLAN 999: Unused Ports
+- Router-on-a-stick
+- DHCP for user networks
+- Inter-VLAN routing
+- ACL filtering between departments
+- SSH administration restricted to IT Support
+- Port Security with sticky MAC addresses
+- Disabled and isolated unused switch ports
+
+## Topology
+
+![Network Topology](evidence/topology-v0.8.png)
+
+## Technologies
+
+- Cisco Packet Tracer
+- Cisco IOS
+- VLANs and IEEE 802.1Q trunks
+- DHCP
+- Access Control Lists
+- SSH
+- Port Security
+
+## Documentation
+
+- [Addressing Plan](docs/01-addressing-plan.md)
+- [Security Policy](docs/02-security-policy.md)
+- [Test Plan](docs/03-test-plan.md)
+
+## Device Configurations
+
+- [R1-EDGE running configuration](configs/R1-EDGE-running-config.txt)
+- [SW-ACCESS-01 running configuration](configs/SW-ACCESS-01-running-config.txt)
