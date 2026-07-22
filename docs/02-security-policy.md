@@ -1,77 +1,72 @@
-\# Addressing Plan
+# Security Policy
 
+This document describes the security controls implemented in the corporate network.
 
+## Department Segmentation
 
-This document defines the IPv4 addressing scheme used in the corporate network.
+The network is divided into separate VLANs.
 
+| VLAN | Department | Purpose |
+|---:|---|---|
+| 10 | ADMIN | Administration users |
+| 20 | DEVELOPMENT | Development users |
+| 30 | IT-SUPPORT | IT administration and technical support |
+| 99 | MANAGEMENT | Network device management |
+| 999 | UNUSED-PORTS | Isolated and disabled switch ports |
 
+## Inter-VLAN Access Control
 
-\## VLAN Addressing
+Development users are not allowed to access the Administration network.
 
+| Source | Destination | Action |
+|---|---|---|
+| 10.10.20.0/24 | 10.10.10.0/24 | Deny |
 
+All other traffic is currently permitted unless restricted by another policy.
 
-| VLAN | Name | Network | Default Gateway | Address Assignment |
+## Secure Remote Administration
 
-|---:|---|---|---|---|
+Remote administration uses SSH version 2.
 
-| 10 | ADMIN | 10.10.10.0/24 | 10.10.10.1 | DHCP |
+Only devices located in the IT Support network are authorized to access the router and switch through SSH.
 
-| 20 | DEVELOPMENT | 10.10.20.0/24 | 10.10.20.1 | DHCP |
+| Setting | Value |
+|---|---|
+| Authorized network | 10.10.30.0/24 |
+| Protocol | SSH version 2 |
+| Telnet | Disabled |
+| Authentication | Local user database |
 
-| 30 | IT-SUPPORT | 10.10.30.0/24 | 10.10.30.1 | DHCP |
+Administrative access from the Administration and Development networks is denied.
 
-| 99 | MANAGEMENT | 10.10.99.0/24 | 10.10.99.1 | Static |
+## Switch Port Security
 
-| 999 | UNUSED-PORTS | No IP network | None | Not applicable |
+Active user ports use Port Security with the following settings:
 
+- Maximum of one MAC address per access port.
+- Sticky MAC address learning.
+- Restrict mode for security violations.
+- Unauthorized traffic is discarded.
+- The affected port remains operational in restrict mode.
 
+## Unused Ports
 
-\## Infrastructure Addresses
+Unused switch ports are:
 
+- Assigned to VLAN 999.
+- Configured as access ports.
+- Administratively disabled.
+- Separated from all production VLANs.
 
+This reduces the possibility of unauthorized devices connecting to the corporate network.
 
-| Device | Interface | IP Address | Purpose |
+## Management Network
 
-|---|---|---|---|
+Network devices are managed through VLAN 99.
 
-| R1-EDGE | G0/0.10 | 10.10.10.1/24 | ADMIN gateway |
+| Device | Management IP |
+|---|---|
+| R1-EDGE | 10.10.99.1 |
+| SW-ACCESS-01 | 10.10.99.2 |
 
-| R1-EDGE | G0/0.20 | 10.10.20.1/24 | DEVELOPMENT gateway |
-
-| R1-EDGE | G0/0.30 | 10.10.30.1/24 | IT-SUPPORT gateway |
-
-| R1-EDGE | G0/0.99 | 10.10.99.1/24 | MANAGEMENT gateway |
-
-| SW-ACCESS-01 | VLAN 99 | 10.10.99.2/24 | Switch management |
-
-
-
-\## DHCP Reservations
-
-
-
-The first twenty addresses of each user network are excluded from DHCP.
-
-
-
-\- `.1` is assigned to the default gateway.
-
-\- `.2` through `.20` are reserved for infrastructure and future services.
-
-\- DHCP clients receive addresses starting from `.21`.
-
-
-
-\## Subnet Mask
-
-
-
-All current networks use:
-
-
-
-```text
-
-255.255.255.0
-
-
+Access to management services is restricted to the IT Support network.
